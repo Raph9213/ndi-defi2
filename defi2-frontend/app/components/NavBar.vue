@@ -67,7 +67,7 @@ async function registerUser() {
   loading.value = true;
   message.value = '';
   try {
-    const res = await fetch('http://localhost:5000/register', {
+    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: name.value, email: email.value, password: password.value })
@@ -95,7 +95,7 @@ async function loginUser() {
   loading.value = true;
   message.value = '';
   try {
-    const res = await fetch('http://localhost:5000/login', {
+    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.value, password: password.value })
