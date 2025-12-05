@@ -127,7 +127,7 @@ function slugify(s: string) {
 
 onMounted(async () => {
     try {
-        const res = await fetch('http://4.tcp.eu.ngrok.io:12316/missions');
+        const res = await fetch('https://api.raph9213.xyz/missions');
         if (!res.ok) throw new Error('Impossible de charger les missions');
         
         const missions = await res.json();
@@ -170,7 +170,7 @@ async function completeMission() {
         const headers: any = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/missions/${mission.value.id}/complete`, {
+        const res = await fetch(`https://api.raph9213.xyz/missions/${mission.value.id}/complete`, {
             method: 'POST',
             headers,
             body: JSON.stringify(body)

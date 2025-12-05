@@ -76,7 +76,7 @@ const customVillage = ref<any>(null);
 
 const handleCreateTribe = async (name: string) => {
   try {
-    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/api/tribe/create', {
+    const res = await fetch('https://ndi-api.raph9213.xyz/api/tribe/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ owner_name: route.params.id, name })
@@ -112,7 +112,7 @@ const formatSavedCo = (co: number): string => {
 
 const handleJoinTribe = async (code: string) => {
   try {
-    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/api/tribe/join', {
+    const res = await fetch('https://ndi-api.raph9213.xyz/api/tribe/join', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ invite: code, user_name: route.params.id })
@@ -140,7 +140,7 @@ definePageMeta({
 onMounted(async () => {
   try {
     const name = encodeURIComponent(route.params.id as string);
-    const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/api/user/name/${name}`);
+    const res = await fetch(`https://ndi-api.raph9213.xyz/api/user/name/${name}`);
     if (!res.ok) return;
     const data = await res.json();
     savedCO.value = data.saved_co || 0;
@@ -152,7 +152,7 @@ onMounted(async () => {
   }
 
   try {
-    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/missions');
+    const res = await fetch('https://ndi-api.raph9213.xyz/api/missions');
     if (res.ok) {
       missions.value = await res.json();
     }
@@ -164,7 +164,7 @@ onMounted(async () => {
 async function refreshUserAndTeam() {
   try {
     const name = encodeURIComponent(route.params.id as string);
-    const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/api/user/name/${name}`);
+    const res = await fetch(`https://ndi-api.raph9213.xyz/api/user/name/${name}`);
     if (!res.ok) return;
     const data = await res.json();
     savedCO.value = data.saved_co || 0;
@@ -176,7 +176,7 @@ async function refreshUserAndTeam() {
 
 async function refreshMissions() {
   try {
-    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/missions');
+    const res = await fetch('https://ndi-api.raph9213.xyz/api/missions');
     if (res.ok) missions.value = await res.json();
   } catch (e) {
     console.error('Error fetching missions', e);
