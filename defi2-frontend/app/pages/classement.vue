@@ -25,7 +25,6 @@
             <th class="p-4 font-semibold border-b">Rang</th>
             <th class="p-4 font-semibold border-b">Village🏘️</th>
             <th class="p-4 font-semibold border-b">CO2 réduits🍃</th>
-            <th class="p-4 font-semibold border-b">Quêtes accomplies🗺️</th>
           </tr>
         </thead>
 
@@ -76,12 +75,8 @@
               </span>
             </td>
 
-            <!-- Défis validés -->
-            <td class="p-4">
-              <span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full bg-sky-100 text-sky-700">
-                {{ team.completedChallenges }} validés
-              </span>
-            </td>
+            <!-- Défis validés (Removed as not available) -->
+
           </tr>
         </tbody>
       </table>
@@ -90,6 +85,7 @@
 </template>
 
 <script setup lang="ts">
+/*
 const ranking = [
   { id: 1, name: 'Les Chili Peppers', points: 1250, completedChallenges: 15 },
   { id: 2, name: 'Code Warriors', points: 1100, completedChallenges: 13 },
@@ -100,4 +96,25 @@ const ranking = [
   { id: 7, name: 'Git Masters', points: 450, completedChallenges: 5 },
   { id: 8, name: 'Vue Vixens', points: 300, completedChallenges: 3 },
 ]
+*/
+import { ref, onMounted } from 'vue';
+
+const ranking = ref<Array<any>>([]);
+
+onMounted(async () => {
+  try {
+    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/api/teams');
+    if (res.ok) {
+      const data = await res.json();
+      ranking.value = data.map((team: any) => ({
+        id: team.id,
+        name: team.name,
+        points: team.teamScore,
+        // completedChallenges is not tracked by backend yet
+      }));
+    }
+  } catch (e) {
+    console.error('Failed to fetch ranking', e);
+  }
+});
 </script>
