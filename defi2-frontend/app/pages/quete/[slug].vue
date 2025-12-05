@@ -157,22 +157,38 @@ async function completeMission() {
 
     isSubmitting.value = true;
     try {
+        const raw = token;
+        const normalized = raw.startsWith('Bearer ') ? raw.slice(7).trim() : raw.trim();
+
+        let username = sessionStorage.getItem('user_name');
+        try {
+            if (!username) {
+                const stored = localStorage.getItem('ndi_user');
+                if (stored) username = JSON.parse(stored).name;
+            }
+        } catch (e) {
+            console.warn('Failed to parse stored user', e);
+        }
+
+        const body: any = {};
+        if (username) body.user = username;
+
         const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/missions/${mission.value.id}/complete`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+                'Authorization': `Bearer ${normalized}`
+            },
+            body: JSON.stringify(body)
         });
-        
+
         if (!res.ok) {
             const data = await res.json();
             throw new Error(data.message || 'Erreur lors de la validation');
         }
-        
+
         completed.value = true;
-        // Confetti effect could be added here
-        
+
     } catch (e: any) {
         alert(e.message);
     } finally {
