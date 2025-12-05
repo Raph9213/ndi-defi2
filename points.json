@@ -2,20 +2,74 @@
   "missions": [
     {
       "id": 1,
-      "name": "une premiere mission",
-      "description": "uwu.",
-      "co2_reduction": 20
+      "name": "Grand Ménage Numérique",
+      "description": "Supprimer 50 emails inutiles ou archivés.",
+      "co2_reduction": 500
     },
     {
       "id": 2,
-      "name": ":3",
-      "description": ".",
-      "co2_reduction": 15
+      "name": "Le Côté Obscur",
+      "description": "Activer le 'Dark Mode' sur ton OS ou ton mobile pour économiser la batterie.",
+      "co2_reduction": 20
     },
     {
       "id": 3,
-      "name": "j'ai besoin de dormir",
-      "description": "par pitie.",
+      "name": "Chasseur d'Onglets",
+      "description": "Fermer 10 onglets de navigateur ouverts depuis trop longtemps.",
+      "co2_reduction": 50
+    },
+    {
+      "id": 4,
+      "name": "Vampire d'Énergie",
+      "description": "Baisser la luminosité de ton écran à 50% ou moins.",
+      "co2_reduction": 15
+    },
+    {
+      "id": 5,
+      "name": "Détox Newsletter",
+      "description": "Se désabonner de 3 newsletters que tu ne lis jamais.",
+      "co2_reduction": 300
+    },
+    {
+      "id": 6,
+      "name": "Le Renard de Feu",
+      "description": "Installer ou utiliser Firefox (ou un autre navigateur libre) pour cette session.",
+      "co2_reduction": 100
+    },
+    {
+      "id": 7,
+      "name": "Vidange Corbeille",
+      "description": "Vider la corbeille de ton ordinateur et ton dossier Téléchargements.",
+      "co2_reduction": 150
+    },
+    {
+      "id": 8,
+      "name": "Radio Star",
+      "description": "Couper sa caméra lors d'une réunion visio (audio only).",
+      "co2_reduction": 80
+    },
+    {
+      "id": 9,
+      "name": "Visionnaire Inclusif",
+      "description": "Ajouter une description (Alt Text) à une image sur un réseau social.",
+      "co2_reduction": 40
+    },
+    {
+      "id": 10,
+      "name": "Recherche Verte",
+      "description": "Faire 5 recherches via Ecosia, Lilo ou Qwant.",
+      "co2_reduction": 25
+    },
+    {
+      "id": 11,
+      "name": "Silence Wifi",
+      "description": "Désactiver le Wifi/4G sur son téléphone pendant 1 heure.",
+      "co2_reduction": 60
+    },
+    {
+      "id": 12,
+      "name": "Recharge Humaine",
+      "description": "Boire un verre d'eau et fermer les yeux 5 minutes (Survivre à la NDI !).",
       "co2_reduction": 10
     }
   ]
