@@ -1,18 +1,18 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-sky-50 via-white to-emerald-50 flex flex-col items-center px-4 py-10">
+  <div class="min-h-screen bg-gradient-to-b from-gray-50 via-sky-50 to-emerald-50 flex flex-col items-center px-4 py-10">
     <h1 class="mb-2 text-4xl font-extrabold text-emerald-700 tracking-tight">
       📣 La Gazette locale 
     </h1>
     <p class="mb-8 text-gray-600 text-center">
-      De la graine 🌱 au grand arbre 🌳 : suivez la progression des équipes.
+      De la graine 🌱 au grand arbre 🌳 : suivez la progression des différentes tribus.
     </p>
 
     <div class="w-full max-w-4xl bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-emerald-100 overflow-hidden">
       <!-- Header de la carte -->
       <div class="flex items-center justify-between px-6 py-4 border-b bg-gradient-to-r from-emerald-50 to-sky-50">
         <div>
-          <h2 class="text-lg font-semibold text-gray-800">Podium des équipes</h2>
-          <p class="text-sm text-gray-500">Classement mis à jour en temps réel pendant la NDI.</p>
+          <h2 class="text-lg font-semibold text-gray-800">Les villages les plus engagés</h2>
+          <p class="text-sm text-gray-500">Classement toujours frais, même plus frais que ton café du matin ☕</p>
         </div>
         <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">
           🌳 Arbre &nbsp;•&nbsp; 🌱 Pousse &nbsp;•&nbsp; 🫘 Graine

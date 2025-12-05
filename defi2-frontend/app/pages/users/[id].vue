@@ -124,6 +124,9 @@ const handleJoinTribe = async (code: string) => {
     }
     const data = await res.json();
     customVillage.value = data;
+    if (data.team) {
+      customVillage.value = data.team;
+    }
   } catch (e) {
     console.error(e);
     alert('Impossible de contacter l\'API');
@@ -131,6 +134,13 @@ const handleJoinTribe = async (code: string) => {
 }
 
 onMounted(async () => {
+  const storedName = sessionStorage.getItem('user_name');
+  if (!storedName || storedName !== route.params.id) {
+    alert('Accès refusé. Veuillez vous connecter.');
+    window.location.href = '/';
+    return;
+  }
+
   try {
     const name = encodeURIComponent(route.params.id as string);
     const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/api/user/name/${name}`);
@@ -143,6 +153,7 @@ onMounted(async () => {
   } catch (e) {
     console.error('Error fetching user info', e);
   }
+
   try {
     const res = await fetch('http://4.tcp.eu.ngrok.io:12316/missions');
     if (res.ok) {

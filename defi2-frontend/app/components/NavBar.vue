@@ -12,13 +12,13 @@
       <div class="hidden w-full md:block md:w-auto" id="navbar-solid">
   <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-secondary-soft">
           <li>
-            <a href="#" class="block py-2 px-3 text-gray-900 bg-brand rounded md:bg-transparent md:text-fg-brand md:p-0" aria-current="page">Accueil</a>
+            <a href="/" class="block py-2 px-3 text-gray-900 bg-brand rounded md:bg-transparent md:text-fg-brand md:p-0" aria-current="page">Accueil</a>
           </li>
           <li>
-            <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Dashboard</a>
+            <a :href="dashboardPath" class="block py-2 px-3 text-gray-900 rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Dashboard</a>
           </li>
           <li>
-            <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Classement</a>
+            <a href="/classement" class="block py-2 px-3 text-gray-900 rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Classement</a>
           </li>
           <li class="ml-2 flex items-center">
             <button @click="openPanel('register')" class="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">S'inscrire</button>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const panelMode = ref<string | null>(null);
 const name = ref('');
@@ -74,7 +74,7 @@ async function registerUser() {
     });
     const data = await res.json();
     if (res.status === 201) {
-      try { localStorage.setItem('ndi_token', data.token); localStorage.setItem('ndi_user', JSON.stringify(data.user)); } catch (e) {}
+      try { localStorage.setItem('ndi_token', data.token); localStorage.setItem('ndi_user', JSON.stringify(data.user)); sessionStorage.setItem('user_name', data.user.name); } catch (e) {}
       window.location.href = `/users/${encodeURIComponent(data.user.name)}`;
     } else {
       message.value = data.message || 'Erreur lors de l\'inscription';
@@ -102,7 +102,7 @@ async function loginUser() {
     });
     const data = await res.json();
     if (res.ok) {
-      try { localStorage.setItem('ndi_token', data.token); localStorage.setItem('ndi_user', JSON.stringify(data.user)); } catch (e) {}
+      try { localStorage.setItem('ndi_token', data.token); localStorage.setItem('ndi_user', JSON.stringify(data.user)); sessionStorage.setItem('user_name', data.user.name); } catch (e) {}
       window.location.href = `/users/${encodeURIComponent(data.user.name)}`;
     } else {
       message.value = data.message || 'Erreur de connexion';
@@ -114,6 +114,14 @@ async function loginUser() {
     loading.value = false;
   }
 }
+const dashboardPath = ref('/');
+
+onMounted(() => {
+  const name = sessionStorage.getItem('user_name');
+  if (name) {
+    dashboardPath.value = `/users/${encodeURIComponent(name)}`;
+  }
+});
 </script>
 
 <style scoped>
