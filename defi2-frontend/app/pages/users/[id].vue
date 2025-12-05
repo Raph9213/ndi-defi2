@@ -43,56 +43,56 @@
           Quêtes disponibles
         </h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <QuestCard 
-            title="Nettoyage de Printemps" 
-            description="Supprimez 50 emails inutiles de votre boîte de réception pour réduire votre empreinte numérique." 
-            :gain="100" 
-            :temps="15" 
-            slug="nettoyage-emails" 
-          />
-          <QuestCard 
-            title="Libération du Pingouin" 
-            description="Installez une distribution Linux sur votre ordinateur personnel ou une machine virtuelle." 
-            :gain="500" 
-            :temps="60" 
-            slug="installer-linux" 
-          />
-          <QuestCard 
-            title="Navigation Légère" 
-            description="Installez et utilisez Firefox à la place de Chrome pour une navigation plus respectueuse de la vie privée." 
-            :gain="200" 
-            :temps="10" 
-            slug="utiliser-firefox" 
-          />
-           <QuestCard 
-            title="Déconnexion Nocturne" 
-            description="Éteignez votre box internet la nuit pendant une semaine complète." 
-            :gain="300" 
-            :temps="5" 
-            slug="deconnexion-box" 
-          />
-        </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <QuestCard
+              v-for="m in missions"
+              :key="m.id"
+              :id="m.id"
+              :title="m.name"
+              :description="m.description"
+              :gain="m.co2_reduction"
+              :temps="m.temps || 0"
+              :slug="slugify(m.name)"
+              @completed="onMissionCompleted"
+            />
+          </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 const route = useRoute();
-const savedCO = 0;
+const savedCO = ref<number>(0);
+
+const missions = ref<Array<any>>([]);
+
+function slugify(s: string) {
+  return encodeURIComponent(String(s).toLowerCase().replace(/\s+/g, '-'));
+}
 
 const customVillage = ref<any>(null);
 
-const handleCreateTribe = (name: string) => {
-  customVillage.value = {
-    name: name,
-    teamScore: 0,
-    members: [
-      { name: route.params.id as string, avatar: "", score: 0 }
-    ],
-    inviteLink: "NDI" + Math.floor(Math.random() * 10000)
-  };
+const handleCreateTribe = async (name: string) => {
+  // Call backend API to create tribe
+  try {
+    const res = await fetch('http://localhost:5000/api/tribe/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ owner_name: route.params.id, name })
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.message || 'Erreur lors de la création de la tribu');
+      return;
+    }
+    const data = await res.json();
+    customVillage.value = data;
+  } catch (e) {
+    console.error(e);
+    alert('Impossible de contacter l\'API');
+  }
 };
 
 const formatSavedCo = (co: number): string => {
@@ -111,24 +111,79 @@ const formatSavedCo = (co: number): string => {
   return `${kt.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 3 })} kt`;
 };
 
-const handleJoinTribe = (code: string) => {
-    // Mock join logic - simulates joining "Pepper land" if code matches, otherwise creates a generic one for testing
-    if (code === "Cl!qa752") {
-         customVillage.value = {
-            name: "Pepper land",
-            teamScore: 14600,
-            members: [
-                { name: "Papa", avatar: "", score: 10000 },
-                { name: "Maman", avatar: "", score: 4000 },
-                { name: "Ehouan", avatar: "", score: 500 },
-                { name: "Mamie", avatar: "", score: 100 },
-                { name: "Papi", avatar: "", score: 0 },
-                { name: route.params.id as string, avatar: "", score: savedCO }
-            ].sort((a, b) => b.score - a.score),
-            inviteLink: "Cl!qa752"
-        };
-    } else {
-        alert("Code invalide ! (Essayez 'Cl!qa752')");
+const handleJoinTribe = async (code: string) => {
+  // Call backend API to join tribe by invite code
+  try {
+    const res = await fetch('http://localhost:5000/api/tribe/join', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ invite: code, user_name: route.params.id })
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.message || 'Code invalide');
+      return;
     }
+    const data = await res.json();
+    customVillage.value = data;
+  } catch (e) {
+    console.error(e);
+    alert('Impossible de contacter l\'API');
+  }
+}
+
+onMounted(async () => {
+  // Fetch user info (saved CO and tribe) from backend
+  try {
+    const name = encodeURIComponent(route.params.id as string);
+    const res = await fetch(`http://localhost:5000/api/user/name/${name}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    savedCO.value = data.saved_co || 0;
+    if (data.team) {
+      customVillage.value = data.team;
+    }
+  } catch (e) {
+    console.error('Error fetching user info', e);
+  }
+  // Fetch missions
+  try {
+    const res = await fetch('http://localhost:5000/missions');
+    if (res.ok) {
+      missions.value = await res.json();
+    }
+  } catch (e) {
+    console.error('Error fetching missions', e);
+  }
+});
+
+async function refreshUserAndTeam() {
+  try {
+    const name = encodeURIComponent(route.params.id as string);
+    const res = await fetch(`http://localhost:5000/api/user/name/${name}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    savedCO.value = data.saved_co || 0;
+    if (data.team) customVillage.value = data.team;
+  } catch (e) {
+    console.error('Error refreshing user', e);
+  }
+}
+
+async function refreshMissions() {
+  try {
+    const res = await fetch('http://localhost:5000/missions');
+    if (res.ok) missions.value = await res.json();
+  } catch (e) {
+    console.error('Error fetching missions', e);
+  }
+}
+
+async function onMissionCompleted(payload: any) {
+  // payload contains saved_co and optional team
+  if (payload.saved_co !== undefined) savedCO.value = payload.saved_co;
+  if (payload.team) customVillage.value = payload.team;
+  // refresh missions in case of changes
+  await refreshMissions();
 }
 </script>
