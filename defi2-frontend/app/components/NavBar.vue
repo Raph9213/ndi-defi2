@@ -49,15 +49,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
-const panelMode = ref<string | null>(null);
+const { panelMode, openPanel, closePanel: closeAuthPanel } = useAuthUI();
 const name = ref('');
 const email = ref('');
 const password = ref('');
 const loading = ref(false);
 const message = ref('');
 
-function openPanel(mode: string) { panelMode.value = mode; message.value = ''; }
-function closePanel() { panelMode.value = null; name.value = ''; email.value = ''; password.value = ''; message.value = ''; }
+function closePanel() { closeAuthPanel(); name.value = ''; email.value = ''; password.value = ''; message.value = ''; }
 
 async function registerUser() {
   if (!name.value || !email.value || !password.value) {
