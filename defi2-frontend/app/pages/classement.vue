@@ -103,7 +103,7 @@ const ranking = ref<Array<any>>([]);
 
 onMounted(async () => {
   try {
-    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/leaderboard');
+    const res = await fetch('https://ndi-api.raph9213.xyz/leaderboard');
     if (res.ok) {
       const data = await res.json();
       ranking.value = data.map((team: any) => ({
