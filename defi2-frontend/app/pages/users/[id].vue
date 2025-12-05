@@ -75,9 +75,8 @@ function slugify(s: string) {
 const customVillage = ref<any>(null);
 
 const handleCreateTribe = async (name: string) => {
-  // Call backend API to create tribe
   try {
-    const res = await fetch('http://localhost:5000/api/tribe/create', {
+    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/api/tribe/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ owner_name: route.params.id, name })
@@ -112,9 +111,8 @@ const formatSavedCo = (co: number): string => {
 };
 
 const handleJoinTribe = async (code: string) => {
-  // Call backend API to join tribe by invite code
   try {
-    const res = await fetch('http://localhost:5000/api/tribe/join', {
+    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/api/tribe/join', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ invite: code, user_name: route.params.id })
@@ -133,10 +131,9 @@ const handleJoinTribe = async (code: string) => {
 }
 
 onMounted(async () => {
-  // Fetch user info (saved CO and tribe) from backend
   try {
     const name = encodeURIComponent(route.params.id as string);
-    const res = await fetch(`http://localhost:5000/api/user/name/${name}`);
+    const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/api/user/name/${name}`);
     if (!res.ok) return;
     const data = await res.json();
     savedCO.value = data.saved_co || 0;
@@ -146,9 +143,8 @@ onMounted(async () => {
   } catch (e) {
     console.error('Error fetching user info', e);
   }
-  // Fetch missions
   try {
-    const res = await fetch('http://localhost:5000/missions');
+    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/missions');
     if (res.ok) {
       missions.value = await res.json();
     }
@@ -160,7 +156,7 @@ onMounted(async () => {
 async function refreshUserAndTeam() {
   try {
     const name = encodeURIComponent(route.params.id as string);
-    const res = await fetch(`http://localhost:5000/api/user/name/${name}`);
+    const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/api/user/name/${name}`);
     if (!res.ok) return;
     const data = await res.json();
     savedCO.value = data.saved_co || 0;
@@ -172,7 +168,7 @@ async function refreshUserAndTeam() {
 
 async function refreshMissions() {
   try {
-    const res = await fetch('http://localhost:5000/missions');
+    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/missions');
     if (res.ok) missions.value = await res.json();
   } catch (e) {
     console.error('Error fetching missions', e);
@@ -180,10 +176,8 @@ async function refreshMissions() {
 }
 
 async function onMissionCompleted(payload: any) {
-  // payload contains saved_co and optional team
   if (payload.saved_co !== undefined) savedCO.value = payload.saved_co;
   if (payload.team) customVillage.value = payload.team;
-  // refresh missions in case of changes
   await refreshMissions();
 }
 </script>
