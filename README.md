@@ -1,27 +1,29 @@
-# 🌿 NDI 2025 - Défi 2 : L'Appli Éco-Responsable
+# 🌿 NDI 2025 - Défi 2 : Podium de concours
+
+> Proposé par BDE MIAGE PARIS CITé
 
 Bienvenue sur le projet de l'équipe **Red Code Chili Peppers** pour la Nuit de l'Info 2025 !
 Cette application web ludique encourage les utilisateurs à réduire leur empreinte carbone en accomplissant des missions écologiques, seul ou en tribu.
 
-## 🚀 Fonctionnalités Réalisées
+## 🔥 Fonctionnalités Réalisées
 
 ### Gestion des utilisateurs
 - **Inscription & Connexion** : Création de compte sécurisée avec email et mot de passe.
-- **Tableau de Bord Personnel** : Vue d'ensemble de votre impact écologique (CO2 économisé) et de votre tribu.
+- **Tableau de Bord Personnel** : Vue d'ensemble de votre impact écologique (CO2 économisé) et de votre équipe (si vous en avez une).
 - **Sécurité** : Vérification de session pour protéger l'accès au tableau de bord.
 
-### Système de Tribus
-- **Création de Tribu** : Fondez votre propre village écologique.
-- **Rejoindre une Tribu** : Rejoignez vos amis via un code d'invitation unique.
-- **Score d'Équipe** : Cumulez vos points avec ceux de votre tribu pour grimper dans le classement.
+### Système d'équipes
+- **Création de Village** : Fondez votre propre village écologique.
+- **Rejoindre un Village** : Rejoignez vos amis via un code d'invitation unique.
+- **Score d'Équipe** : Cumulez vos points avec ceux de votre village pour grimper dans le classement des villages.
 
-### 🌍 Missions & Quêtes
-- **Catalogue de Quêtes** : Liste de défis écologiques variés (ex: "Manger végétarien", "Zéro déchet").
-- **Validation** : Complétez des missions pour gagner des points (g de CO2 évités) en temps réel.
+### Missions & Quêtes
+- **Catalogue de Quêtes** : Liste de défis variés faisant la promotion d'un numérique inclusif responsable et durable.
+- **Validation** : Complétez des missions pour gagner des points (g de CO2 économisé) en temps réel.
 - **Impact Visuel** : Visualisez concrètement votre contribution à la planète.
 
-### 🏆 Classement (Leaderboard)
-- **Classement en Temps Réel** : Comparez la performance de votre tribu avec les autres villages.
+### Classement des villages
+- **Classement en Temps Réel** : Comparez la performance de votre équipe avec les autres.
 - **Mise à jour dynamique** : Les scores sont recalculés instantanément à chaque mission validée.
 
 ---

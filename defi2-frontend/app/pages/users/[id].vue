@@ -133,14 +133,11 @@ const handleJoinTribe = async (code: string) => {
   }
 }
 
-onMounted(async () => {
-  const storedName = sessionStorage.getItem('user_name');
-  if (!storedName || storedName !== route.params.id) {
-    alert('Accès refusé. Veuillez vous connecter.');
-    window.location.href = '/';
-    return;
-  }
+definePageMeta({
+  middleware: ['auth']
+});
 
+onMounted(async () => {
   try {
     const name = encodeURIComponent(route.params.id as string);
     const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/api/user/name/${name}`);
