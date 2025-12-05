@@ -148,31 +148,41 @@ onMounted(async () => {
 async function completeMission() {
     if (!isChecked.value || !mission.value) return;
     
-    const token = localStorage.getItem('ndi_token');
-    if (!token) {
-        alert('Vous devez être connecté pour valider une mission.');
-        // Optionally redirect to login
-        return;
-    }
+    // Token is optional — allow fallback with username
+    const raw = localStorage.getItem('ndi_token');
+    const token = raw ? (raw.startsWith('Bearer ') ? raw.slice(7).trim() : raw.trim()) : null;
 
     isSubmitting.value = true;
     try {
+        let username = sessionStorage.getItem('user_name');
+        try {
+            if (!username) {
+                const stored = localStorage.getItem('ndi_user');
+                if (stored) username = JSON.parse(stored).name;
+            }
+        } catch (e) {
+            console.warn('Failed to parse stored user', e);
+        }
+
+        const body: any = {};
+        if (username) body.user_name = username;
+
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
         const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/missions/${mission.value.id}/complete`, {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers,
+            body: JSON.stringify(body)
         });
-        
+
         if (!res.ok) {
             const data = await res.json();
             throw new Error(data.message || 'Erreur lors de la validation');
         }
-        
+
         completed.value = true;
-        // Confetti effect could be added here
-        
+
     } catch (e: any) {
         alert(e.message);
     } finally {

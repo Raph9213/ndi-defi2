@@ -30,17 +30,36 @@ const description = props.description;
 const slug = props.slug;
 
 async function complete() {
-    const token = localStorage.getItem('ndi_token');
-    if (!token) {
-        alert('Veuillez vous connecter pour compléter cette mission.');
-        return;
-    }
+    // Token is optional now — we allow sending user_name as a fallback
+    const raw = localStorage.getItem('ndi_token');
+    const token = raw ? (raw.startsWith('Bearer ') ? raw.slice(7).trim() : raw.trim()) : null;
     try {
         console.log('Completing mission:', props.id);
-        console.log('Token:', token);
+        console.log('Raw stored token:', raw);
+        console.log('Using Authorization header:', `Bearer ${token}`);
+    // Try to get a username from sessionStorage or stored user object as a fallback
+        let username = sessionStorage.getItem('user_name');
+        try {
+            if (!username) {
+                const storedUser = localStorage.getItem('ndi_user');
+                if (storedUser) {
+                    username = JSON.parse(storedUser).name;
+                }
+            }
+        } catch (e) {
+            console.warn('Failed to parse stored user', e);
+        }
+
+        const body: any = {};
+        if (username) body.user_name = username;
+
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
         const res = await fetch(`http://4.tcp.eu.ngrok.io:12316/missions/${props.id}/complete`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+            headers,
+            body: JSON.stringify(body)
         });
         const data = await res.json();
         if (!res.ok) {
