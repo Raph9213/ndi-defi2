@@ -71,7 +71,7 @@
             <!-- Points -->
             <td class="p-4">
               <span class="text-base font-extrabold text-emerald-700">
-                {{ team.points }} kg CO₂-eq
+                {{ team.points ? team.points : 0 }} kg CO₂-eq
               </span>
             </td>
 
@@ -103,13 +103,13 @@ const ranking = ref<Array<any>>([]);
 
 onMounted(async () => {
   try {
-    const res = await fetch('http://4.tcp.eu.ngrok.io:12316/api/teams');
+    const res = await fetch('https://ndi-api.raph9213.xyz/leaderboard');
     if (res.ok) {
       const data = await res.json();
       ranking.value = data.map((team: any) => ({
         id: team.id,
         name: team.name,
-        points: team.teamScore,
+        points: team.saved_co,
         // completedChallenges is not tracked by backend yet
       }));
     }
