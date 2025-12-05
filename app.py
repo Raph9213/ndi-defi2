@@ -157,6 +157,18 @@ class Mission(db.Model):
     co2_reduction = db.Column(db.Integer, default=0)
 
 
+class MissionCompletion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    mission_id = db.Column(db.Integer, db.ForeignKey('mission.id'), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    __table_args__ = (
+        db.UniqueConstraint('team_id', 'mission_id', name='uix_team_mission'),
+        db.UniqueConstraint('user_id', 'mission_id', name='uix_user_mission'),
+    )
+
+
 def serialize_mission(m: Mission):
     return { 'id': m.id, 'name': m.name, 'description': m.description, 'co2_reduction': m.co2_reduction }
 
@@ -352,6 +364,7 @@ def get_missions():
 
 
 @app.route('/missions/<int:mission_id>/complete', methods=['POST'])
+@jwt_required
 def complete_mission(mission_id):
     mission = Mission.query.get(mission_id)
     if not mission:
@@ -362,9 +375,29 @@ def complete_mission(mission_id):
             return jsonify({'message': 'No authenticated user (g.user missing)'}), 401
         logging.debug(f"complete_mission: g.user type={type(g.user)} repr={repr(g.user)}")
 
+        # Determine if team completion should be checked
+        team_id = g.user.team_id
+        # If user belongs to a team ensure the team hasn't already completed this mission
+        if team_id:
+            existing = MissionCompletion.query.filter_by(team_id=team_id, mission_id=mission_id).first()
+            if existing:
+                return jsonify({'message': 'This mission has already been completed by your team.'}), 400
+            # record team completion
+            completion = MissionCompletion(mission_id=mission_id, team_id=team_id, user_id=g.user.id)
+            db.session.add(completion)
+        else:
+            # No team: ensure the user hasn't already completed this mission
+            existing = MissionCompletion.query.filter_by(user_id=g.user.id, mission_id=mission_id).first()
+            if existing:
+                return jsonify({'message': 'You have already completed this mission.'}), 400
+            completion = MissionCompletion(mission_id=mission_id, user_id=g.user.id)
+            db.session.add(completion)
+
+        # Update user's saved CO2 and persist
         g.user.saved_co = (g.user.saved_co or 0) + (mission.co2_reduction or 0)
         db.session.add(g.user)
         db.session.commit()
+
         team_payload = serialize_team(g.user.team) if g.user.team else None
         return jsonify({'message': f'Mission {mission_id} completed!', 'saved_co': g.user.saved_co, 'team': team_payload}), 200
     except Exception as e:
